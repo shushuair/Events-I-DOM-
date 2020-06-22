@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        list-style: none;
+        text-decoration: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      ul {
+        width: 300px;
+        color: red;
+      }
+
+      ul ul {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        display: none;
+      }
+
+      ul li {
+        position: relative;
+      }
+
+      .show ul {
+        display: block;
+      }
+
+      ul li {
+        display: block;
+        padding: 5px;
+        border: 1px solid #cc9999;
+        text-align: center;
+        text-decoration: none;
+        color: #000;
+        background-color: #fafafa;
+      }
+
+      ul li:hover {
+        color: #ffffff;
+        background-color: #6dcfe7;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const nav = [
+        {
+          listText: "List-Item 1",
+          linkToGo: "https://www.google.co.uk",
+        },
+        {
+          listText: "List-Item 2",
+          linkToGo: "https://www.yahoo.com",
+        },
+        {
+          listText: "List-Item 3",
+          linkToGo: "https://www.instagram.com",
+        },
+        {
+          listText: "List-Item 4",
+          listClass: "submenu",
+          submenu: [
+            {
+              listText: "List-Item 4.1",
+              linkToGo: "https://www.gov.uk",
+            },
+            {
+              listText: "List-Item 4.2",
+              linkToGo: "https://www.facebook.com.com",
+            },
+            {
+              listText: "List-Item 4.3",
+              linkToGo: "https://www.vk.com",
+            },
+          ],
+        },
+        {
+          listText: "List-Item 5",
+          listClass: "submenu",
+          submenu: [
+            {
+              listText: "List-Item 5.1",
+              linkToGo: "https://www.google.co.uk",
+            },
+            {
+              listText: "List-Item 5.2",
+              linkToGo: "https://www.google.co.uk",
+            },
+            {
+              listText: "List-Item 5.3",
+              linkToGo: "https://www.google.co.uk",
+            },
+            {
+              listText: "List-Item 5.4",
+              listClass: "submenu",
+              submenu: [
+                {
+                  listText: "List-Item 5.4.1",
+                  linkToGo: "https://www.google.co.uk",
+                },
+                {
+                  listText: "List-Item 5.4.2",
+                  linkToGo: "https://www.google.co.uk",
+                },
+                {
+                  listText: "List-Item 5.4.3",
+                  linkToGo: "https://www.google.co.uk",
+                },
+              ],
+            },
+          ],
+        },
+      ];
+
+      function navBuild(arr) {
+        const $ul = document.createElement("ul");
+
+        arr.forEach((item) => {
+          const $li = document.createElement("li");
+
+          if (item.listClass) {
+            $li.classList.add(item.listClass);
+          }
+
+          if (item.linkToGo) {
+            const $linkTo = document.createElement("a");
+            $linkTo.href = item.linkToGo;
+            $linkTo.classList.add("nav-link");
+            $linkTo.innerText = item.listText;
+            $li.append($linkTo);
+          }
+
+          if (item.submenu) {
+            const $subMenu = navBuild(item.submenu);
+            $li.innerText = item.listText;
+            $li.append($subMenu);
+          }
+
+          $ul.append($li);
+        });
+
+        return $ul;
+      }
+
+      const $menu = navBuild(nav);
+
+      document.body.prepend($menu);
+
+      const $dropMenu = document.querySelectorAll(".submenu");
+
+      $dropMenu.forEach((item) => {
+        item.addEventListener("click", () => {
+          item.classList.add("show");
+        });
+      });
+
+      const $navLinks = document.querySelectorAll(".nav-link");
+
+      $navLinks.forEach((item) => {
+        item.addEventListener("click", function (event) {
+          event.preventDefault();
+          const isLeave = confirm("Хотите покинуть страницу?");
+
+          if (isLeave) {
+            const leaveLink = event.target.getAttribute("href");
+            window.location.href = leaveLink;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
